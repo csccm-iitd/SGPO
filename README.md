@@ -2,7 +2,7 @@
   <img src="assets/new_logo.png" width="300" alt="Logo" />
 </p>
 
-# From Local Interactions to Global Operators: Scalable Gaussian Process Operator for Physical Systems
+# From Local Interactions to Global Operators: Scalable Gaussian Process Operator for Physical Systems **(LoGoS-GPO)**
 
 This repository contains the implementation of the following paper:
 
@@ -91,21 +91,25 @@ experiments/
 
 configs/                    # YAML configuration files
 notebooks/                  # notebooks
-
+```
 
 ### Dataset
   + The training and testing datasets for different case studies are available in the following link:
     > [Dataset](https://drive.google.com/drive/folders/1kKjXjvqdMiDnqRN0rUVr2ENf9583-zTS?usp=sharing) 
 
+
 ## Citation
 
-If find this work helpful in your research, please cite the following paper:
-```
+If you find this work helpful in your research, please cite the following paper:
+
+```bibtex
 @misc{kumar2025localinteractionsglobaloperators,
-      title={From Local Interactions to Global Operators: Scalable Gaussian Process Operator for Physical Systems}, 
-      author={Sawan Kumar and Tapas Tripura and Rajdip Nayek and Souvik Chakraborty},
-      year={2025},
-      eprint={2506.15906},
-      archivePrefix={arXiv},
-      primaryClass={stat.ML},
-      url={https://arxiv.org/abs/2506.15906}}
+  title={From Local Interactions to Global Operators: Scalable Gaussian Process Operator for Physical Systems},
+  author={Sawan Kumar and Tapas Tripura and Rajdip Nayek and Souvik Chakraborty},
+  year={2025},
+  eprint={2506.15906},
+  archivePrefix={arXiv},
+  primaryClass={stat.ML},
+  url={https://arxiv.org/abs/2506.15906}
+}
+```
