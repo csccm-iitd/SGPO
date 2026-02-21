@@ -1,0 +1,50 @@
+# Darcy flow (2D): a(x,y) -> u(x,y)
+# Data: separate .mat train/test files, boundary_zero enforced
+
+data:
+  name: darcy
+  train_path: /DATA/Sawan_projects/research/DATA/piececonst_r421_N1024_smooth1.mat
+  test_path: /DATA/Sawan_projects/research/DATA/piececonst_r421_N1024_smooth2.mat
+  x_field: coeff
+  y_field: sol
+  format: mat
+  ntrain: 1000
+  ntest: 100
+  sub: 5
+  resolution: [85, 85]
+  normalize_x: true
+  normalize_y: true
+  boundary_zero: true
+
+model:
+  model_type: vnngp
+  num_latents: 120
+  num_nn: 100
+  num_inducing: 200
+  kernel: matern
+  kernel_nu: 2.5
+  use_ard: false
+  mean_type: constant
+  use_wno_embedding: false
+  wno_width: 64
+  wno_level: 4
+  wno_layers: 4
+  wno_wavelet: db4
+
+training:
+  lr: 4.0e-3
+  weight_decay: 1.0e-4
+  batch_size: 8
+  num_epochs: 100
+  scheduler_step: 50
+  scheduler_gamma: 0.75
+  optimizer: adamw
+  seed: 0
+
+logging:
+  use_wandb: false
+  wandb_project: sgpo
+  save_dir: results/darcy
+  log_interval: 10
+
+device: auto

@@ -1,0 +1,48 @@
+# Wave equation (1D): u(x, t=0) -> u(x, t=80)
+# Data: .npz files with arrays x, t, u. Separate train/test files.
+
+data:
+  name: wave
+  train_path: /DATA/Sawan_projects/research/DATA/train_IC2.npz
+  test_path: /DATA/Sawan_projects/research/DATA/test_IC2.npz
+  format: npz
+  ntrain: 1000
+  ntest: 100
+  sub: 1
+  resolution: [200]
+  normalize_x: false
+  normalize_y: false
+
+model:
+  model_type: vnngp
+  num_latents: 60
+  num_nn: 70
+  num_inducing: 200
+  kernel: matern
+  kernel_nu: 2.5
+  use_ard: true
+  mean_type: constant
+  use_wno_embedding: true
+  wno_width: 64
+  wno_level: 4
+  wno_layers: 4
+  wno_wavelet: db4
+  wno_embed_dim: 64
+
+training:
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  batch_size: 32
+  num_epochs: 200
+  scheduler_step: 50
+  scheduler_gamma: 0.75
+  optimizer: adamw
+  seed: 0
+
+logging:
+  use_wandb: false
+  wandb_project: sgpo
+  save_dir: results/wave
+  log_interval: 10
+
+device: auto

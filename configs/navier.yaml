@@ -1,0 +1,47 @@
+# Navier-Stokes (2D): vorticity input -> vorticity output
+# Data: separate .npy input/output files, shape (x, y, n) permuted to (n, y, x)
+
+data:
+  name: navier
+  train_path: /DATA/Sawan_projects/research/DATA/1nu0_005_Random_NS_curl_f_100.npy
+  test_path: /DATA/Sawan_projects/research/DATA/1nu0_005_Random_NS_omega_100.npy
+  format: npy
+  ntrain: 3000
+  ntest: 200
+  sub: 1
+  resolution: [64, 64]
+  normalize_x: true
+  normalize_y: true
+
+model:
+  model_type: vnngp
+  num_latents: 70
+  num_nn: 50
+  num_inducing: 500
+  kernel: matern
+  kernel_nu: 2.5
+  use_ard: false
+  mean_type: constant
+  use_wno_embedding: false
+  wno_width: 64
+  wno_level: 4
+  wno_layers: 4
+  wno_wavelet: db4
+
+training:
+  lr: 8.0e-3
+  weight_decay: 1.0e-4
+  batch_size: 16
+  num_epochs: 200
+  scheduler_step: 50
+  scheduler_gamma: 0.75
+  optimizer: adamw
+  seed: 0
+
+logging:
+  use_wandb: false
+  wandb_project: sgpo
+  save_dir: results/navier
+  log_interval: 10
+
+device: auto

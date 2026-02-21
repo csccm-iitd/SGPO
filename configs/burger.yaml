@@ -1,0 +1,48 @@
+# Burgers equation (1D): a(x) -> u(x, t=1)
+# Data: .mat file with fields 'a' (input) and 'u' (output)
+
+data:
+  name: burger
+  train_path: /DATA/Sawan_projects/research/DATA/burgers_data_R10.mat
+  x_field: a
+  y_field: u
+  format: mat
+  ntrain: 1000
+  ntest: 100
+  sub: 8
+  resolution: [1024]
+  normalize_x: false
+  normalize_y: false
+
+model:
+  model_type: vnngp
+  num_latents: 70
+  num_nn: 50
+  num_inducing: 200
+  kernel: matern
+  kernel_nu: 2.5
+  use_ard: false
+  mean_type: constant
+  use_wno_embedding: false
+  wno_width: 64
+  wno_level: 4
+  wno_layers: 4
+  wno_wavelet: db4
+
+training:
+  lr: 5.0e-3
+  weight_decay: 1.0e-4
+  batch_size: 16
+  num_epochs: 200
+  scheduler_step: 50
+  scheduler_gamma: 0.75
+  optimizer: adamw
+  seed: 0
+
+logging:
+  use_wandb: false
+  wandb_project: sgpo
+  save_dir: results/burger
+  log_interval: 10
+
+device: auto

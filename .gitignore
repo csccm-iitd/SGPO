@@ -1,0 +1,37 @@
+
+#Folders
+results/
+benchmarks/
+checkpoints/
+logs/
+scratch
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+
+# Ignore data files
+*.csv
+*.json
+DEVELOPMENT_GUIDE.md
+
+# Ignore logs
+*.log
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore virtual environments
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Ignore VS Code settings
+.vscode/
