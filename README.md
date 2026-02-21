@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/new_logo.png" width="300" alt="Logo" />
+  <img src="assets/logosGPO.png" width="300" alt="Logo" />
 </p>
 
 # From Local Interactions to Global Operators: Scalable Gaussian Process Operator for Physical Systems **(LoGoS-GPO)**
