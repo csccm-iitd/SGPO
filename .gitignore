@@ -20,6 +20,7 @@ venv.bak/
 *.csv
 *.json
 DEVELOPMENT_GUIDE.md
+notebooks/plot_results.ipynb
 
 # Ignore logs
 *.log

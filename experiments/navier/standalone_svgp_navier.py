@@ -45,7 +45,7 @@ SCHEDULER_STEP = 50
 SCHEDULER_GAMMA = 0.75
 
 SEED = 0
-DEVICE = "cuda:1"
+DEVICE = "cuda:0"
 SAVE_DIR = "results/navier"
 
 

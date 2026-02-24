@@ -24,7 +24,7 @@ class VNNGP(ApproximateGP):
         num_inducing,
         training_batch_size,
         kernel_type="matern",
-        kernel_nu=1.5,
+        kernel_nu=2.5,
         use_ard=False,
         mean_module=None,
         wno_embedding=None,
@@ -90,7 +90,6 @@ class VNNGP(ApproximateGP):
 
     def forward(self, x):
         # The kernel handles embedding internally (via EmbeddingKernel).
-        # The mean function receives raw inputs (ConstantMean ignores dims).
         mean_x = self.mean_module(x)
         covar_x = self.covar_module(x, x)
         return MultivariateNormal(mean_x, covar_x)
