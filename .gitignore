@@ -1,38 +1,35 @@
-
-#Folders
+# Data, runs and outputs
+datasets/
 results/
-benchmarks/
+runs/
+figures/
 checkpoints/
 logs/
-scratch
+*.pt
+*.pth
+*.npy
+*.npz
+*.mat
+*.h5
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
 
 # Environments
 .env
 .venv
 env/
 venv/
-ENV/
-env.bak/
-venv.bak/
 
-
-# Ignore data files
-*.csv
-*.json
-DEVELOPMENT_GUIDE.md
-notebooks/plot_results.ipynb
-
-# Ignore logs
-*.log
-# Ignore system files
+# Editors and OS
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
-
-# Ignore virtual environments
-venv/
-env/
-__pycache__/
-*.pyc
-
-# Ignore VS Code settings
-.vscode/

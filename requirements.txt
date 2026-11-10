@@ -1,7 +1,20 @@
-torch
-gpytorch
-matplotlib
-pandas
+# core (sgpo package, experiments/)
+torch>=2.1
 numpy
-PyYAML
-wandb
+scipy
+h5py
+PyWavelets
+pytorch_wavelets
+ptwt
+matplotlib
+# dataset generators (scripts/data/gen_darcy_notch.py)
+scikit-fem
+triangle
+# dataset notebooks and downloads
+pandas
+nbformat
+nbclient
+ipykernel
+gdown
+# tests
+pytest

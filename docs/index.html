@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LoGoS-GPO: Scalable Gaussian Process Operator for Physical Systems</title>
+  <meta name="description" content="LoGoS-GPO: a scalable Gaussian process operator that combines local nearest-neighbour spatial kernels, sparse inducing points over inputs and a neural-operator mean.">
+  <meta name="keywords" content="Gaussian process, operator learning, neural operator, uncertainty quantification, Vecchia approximation, PDE surrogate">
+  <meta name="author" content="Sawan Kumar, Tapas Tripura, Rajdip Nayek, Souvik Chakraborty">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="From Local Interactions to Global Operators: Scalable Gaussian Process Operator for Physical Systems">
+  <meta property="og:description" content="Scalable, uncertainty-aware operator learning with local Vecchia kernels, sparse inducing points and neural-operator means.">
+  <meta property="og:image" content="static/images/vecchia_build_still.png">
+  <meta name="citation_title" content="From Local Interactions to Global Operators: Scalable Gaussian Process Operator for Physical Systems">
+  <meta name="citation_author" content="Kumar, Sawan">
+  <meta name="citation_author" content="Tripura, Tapas">
+  <meta name="citation_author" content="Nayek, Rajdip">
+  <meta name="citation_author" content="Chakraborty, Souvik">
+  <meta name="citation_journal_title" content="Journal of Computational Physics">
+  <meta name="citation_arxiv_id" content="2506.15906">
+
+  <link rel="icon" type="image/png" href="static/images/logo.png">
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/logos.css">
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script>
+    window.MathJax = { tex: { inlineMath: [["\\(", "\\)"]] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<main id="main-content">
+
+<!-- ============================== Title ============================== -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop has-text-centered">
+      <img class="logo-hero" src="static/images/logo.png" alt="LoGoS-GPO logo">
+      <h1 class="title is-2 publication-title">From Local Interactions to Global Operators:<br>
+        Scalable Gaussian Process Operator for Physical Systems</h1>
+      <div class="is-size-5 publication-authors">
+        <span class="author-block">Sawan Kumar<sup>1</sup>,</span>
+        <span class="author-block">Tapas Tripura<sup>1</sup>,</span>
+        <span class="author-block">Rajdip Nayek<sup>1</sup>,</span>
+        <span class="author-block">Souvik Chakraborty<sup>1,2,3</sup></span>
+      </div>
+      <div class="is-size-6 publication-authors">
+        <span class="author-block"><sup>1</sup>Department of Applied Mechanics, IIT Delhi</span>
+        <span class="author-block"><sup>2</sup>Yardi School of Artificial Intelligence, IIT Delhi</span>
+        <span class="author-block"><sup>3</sup>The Grainger College of Engineering, UIUC</span>
+      </div>
+      <div class="venue is-size-5">Journal of Computational Physics, 2026</div>
+
+      <div class="publication-links" style="margin-top: 1.2rem">
+        <span class="link-block"><a href="https://www.sciencedirect.com/science/article/pii/S002199912600135X" target="_blank" class="external-link button is-normal is-rounded is-dark">
+          <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a></span>
+        <span class="link-block"><a href="https://arxiv.org/abs/2506.15906" target="_blank" class="external-link button is-normal is-rounded is-dark">
+          <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span></a></span>
+        <span class="link-block"><a href="https://github.com/csccm-iitd/SGPO" target="_blank" class="external-link button is-normal is-rounded is-dark">
+          <span class="icon"><i class="fab fa-github"></i></span><span>Code</span></a></span>
+      </div>
+      <p class="release-note"><span class="tag-new">Updated release</span> Refined implementation with stronger results on
+        every benchmark, input-adaptive uncertainty, and new large-scale applications.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== Teaser ============================== -->
+<section class="section" style="padding-top: 0.5rem">
+  <div class="container is-max-desktop">
+    <div class="teaser-grid">
+      <div class="media-frame">
+        <video class="media" autoplay muted loop playsinline preload="metadata" poster="static/images/vecchia_build_still.png">
+          <source src="static/videos/vecchia_build.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div>
+        <h3>From local interactions <span class="dim">…</span></h3>
+        <p>LoGoS-GPO never forms the dense spatial covariance. Under the Vecchia approximation, every grid point is drawn
+          conditioned only on its <b>k = 16</b> nearest previously drawn neighbours (highlighted).</p>
+        <h3><span class="dim">…</span> to global operators</h3>
+        <p>Chaining these local conditionals reproduces a smooth, globally correlated field. The animation is an actual
+          draw from the spatial kernel learned on Navier–Stokes. Each point costs \(O(k^3)\) instead of the \(O(d^3)\)
+          of an exact Gaussian process on \(d\) grid points.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== Abstract ============================== -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>Operator learning offers a powerful paradigm for solving parametric partial differential equations (PDEs), but
+            scaling probabilistic neural operators such as the recently proposed Gaussian Processes Operators (GPOs) to
+            high-dimensional, data-intensive regimes remains a significant challenge. In this work, we introduce a novel,
+            scalable GPO, which capitalizes on sparsity, locality, and structural information through judicious kernel
+            design. Addressing the fundamental limitation of cubic computational complexity, our method leverages
+            nearest-neighbor-based local kernel approximations in the spatial domain, sparse kernel approximation in the
+            parameter space, and structured Kronecker factorizations to enable tractable inference on large-scale datasets
+            and high-dimensional input. While local approximations often introduce accuracy trade-offs due to limited
+            kernel interactions, we overcome this by embedding operator-aware kernel structures and employing expressive,
+            task-informed mean functions derived from neural operator architectures. Through extensive evaluations on a
+            broad class of nonlinear PDEs&mdash;including Navier-Stokes, wave advection, Darcy flow, and Burgers'
+            equations&mdash;we demonstrate that our framework consistently achieves high accuracy across varying
+            discretization scales. These results underscore the potential of our approach to bridge the gap between
+            scalability and fidelity in GPO, offering a compelling foundation for uncertainty-aware modeling in complex
+            physical systems.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== Method ============================== -->
+<section class="section">
+  <div class="container is-max-desktop has-text-centered">
+    <h2 class="title is-3">Method</h2>
+    <p class="section-lead">A Gaussian process over output fields whose mean is a neural operator and whose covariance
+      factorises into an input kernel and a spatial kernel, each approximated where it is cheap to do so.</p>
+    <div class="media-frame"><img class="media" src="static/images/architecture.png" alt="LoGoS-GPO architecture"></div>
+    <div class="cards has-text-left">
+      <div class="card-k"><div class="tag-k">Local</div><h4>Vecchia spatial kernel</h4>
+        <p>\(K_x\) is a Matérn kernel on the grid in nearest-neighbour (Vecchia) form: a sparse inverse Cholesky factor with
+          \(k\) non-zeros per row, so the cost is linear in grid size.</p></div>
+      <div class="card-k"><div class="tag-k">Global</div><h4>Sparse input kernel</h4>
+        <p>\(K_a\) compares input functions through an embedding of the operator's latent features, with \(M\) inducing
+          points trained by minibatch variational inference: the cost is linear in the number of samples.</p></div>
+      <div class="card-k"><div class="tag-k">Structure</div><h4>Operator mean, Kronecker covariance</h4>
+        <p>The covariance \(K_a \otimes K_x\) never forms an \(Nd \times Nd\) matrix. A wavelet neural operator provides
+          the mean and is refined jointly with the GP through the ELBO.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== Accuracy ============================== -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Accuracy</h2>
+    <p class="section-lead has-text-centered">Relative \(L_2\) test error (%), mean ± std over three seeds on the official
+      benchmark data: the updated release<sup>*</sup> alongside the values reported in the paper.</p>
+    <div class="table-wrap">
+      <table class="results-table">
+        <thead>
+          <tr class="grp"><th></th><th>Updated release<sup>*</sup></th><th colspan="3">Reported in the paper</th></tr>
+          <tr><th>Benchmark</th><th>LoGoS-GPO</th><th>LoGoS-GPO</th><th>GPO</th><th>SVGP</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Burgers</td><td class="ours">0.75 ± 0.06</td><td class="pub">0.86 ± 0.07</td><td class="pub">2.89 ± 0.42</td><td class="pub">3.81 ± 0.09</td></tr>
+          <tr><td>Wave advection</td><td class="ours">0.33 ± 0.04</td><td class="pub">0.43 ± 0.11</td><td class="pub">0.63 ± 0.21</td><td class="pub">1.81 ± 0.29</td></tr>
+          <tr><td>Darcy, notched domain</td><td class="ours">0.30 ± 0.02</td><td class="pub">1.38 ± 0.21</td><td class="pub">2.18 ± 0.29</td><td class="pub">5.18 ± 0.47</td></tr>
+          <tr class="sub"><td>&nbsp;&nbsp;&nbsp;grid-adapted wavelet depth<sup>†</sup></td><td class="ours">0.17 ± 0.03</td><td class="pub">–</td><td class="pub">–</td><td class="pub">–</td></tr>
+          <tr><td>Navier–Stokes</td><td class="ours">0.73 ± 0.02</td><td class="pub">2.01 ± 0.53</td><td class="pub">2.21 ± 0.32</td><td class="pub">7.89 ± 0.22</td></tr>
+          <tr class="sub"><td>&nbsp;&nbsp;&nbsp;grid-adapted wavelet depth<sup>†</sup></td><td class="ours">0.21 ± 0.01</td><td class="pub">–</td><td class="pub">–</td><td class="pub">–</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote"><sup>*</sup> Same method, refined implementation: a GPyTorch-related training issue is resolved so the
+      operator mean receives the full likelihood gradient, and the likelihood now adapts its noise to the input.
+      <sup>†</sup> Wavelet depth matched to the grid resolution. GPO and SVGP retrained with the same pipeline are
+      included in the repository.</p>
+
+    <h3 class="title is-5 has-text-centered" style="margin-top: 2.2rem">Beyond the paper: standard Darcy benchmark</h3>
+    <div class="table-wrap">
+      <table class="results-table">
+        <thead>
+          <tr class="grp"><th></th><th>This release</th><th colspan="4">Reported in the literature</th></tr>
+          <tr><th>Benchmark</th><th>LoGoS-GPO</th><th>Transolver</th><th>LSM</th><th>GNOT</th><th>FNO</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Darcy flow, 85 × 85</td><td class="ours">0.52 ± 0.00</td><td class="pub">0.57</td><td class="pub">0.65</td><td class="pub">1.05</td><td class="pub">1.08</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Piecewise-constant permeability to pressure, the standard 1000/200 split. Literature values as
+      collected by Wu et al. (Transolver, ICML 2024). LoGoS-GPO: three seeds, with a calibrated σ that the deterministic
+      models do not provide.</p>
+
+    <h3 class="title is-4 has-text-centered" style="margin-top: 2.6rem">Test predictions</h3>
+    <p class="section-lead has-text-centered" style="font-size: 0.98rem">Input, truth, posterior mean, predictive std σ and
+      absolute error on held-out test cases, using the heteroscedastic likelihood described below. In the 2D panels σ and
+      |error| share one logarithmic colour scale.</p>
+    <div class="tabs-k" data-tabs="pred">
+      <button class="active" data-pane="pred-ns">Navier–Stokes</button>
+      <button data-pane="pred-notch">Darcy (notch)</button>
+      <button data-pane="pred-darcy">Darcy</button>
+      <button data-pane="pred-burgers">Burgers</button>
+      <button data-pane="pred-adv">Wave advection</button>
+      <button data-pane="pred-airfoil">Airfoil</button>
+    </div>
+    <div class="tab-pane active" id="pred-ns">
+      <div class="media-frame"><video class="media" autoplay muted loop playsinline preload="metadata"><source src="static/videos/ns_gallery.mp4" type="video/mp4"></video></div>
+      <p class="caption"><b>Navier–Stokes (64 × 64).</b> Forcing field to vorticity. Six test cases spread over the error
+        distribution (10th to 90th percentile).</p>
+    </div>
+    <div class="tab-pane" id="pred-notch">
+      <div class="media-frame"><video class="media" muted loop playsinline preload="none"><source src="static/videos/notch_gallery.mp4" type="video/mp4"></video></div>
+      <p class="caption"><b>Darcy flow in a notched triangle (51 × 51).</b> Boundary condition to pressure, on an irregular
+        domain with a slit.</p>
+    </div>
+    <div class="tab-pane" id="pred-darcy">
+      <div class="media-frame"><video class="media" muted loop playsinline preload="none"><source src="static/videos/darcy_gallery.mp4" type="video/mp4"></video></div>
+      <p class="caption"><b>Darcy flow (85 × 85).</b> Piecewise-constant permeability to pressure. The uncertainty traces the
+        permeability interfaces, where the error lives.</p>
+    </div>
+    <div class="tab-pane" id="pred-burgers">
+      <div class="media-frame"><video class="media" muted loop playsinline preload="none"><source src="static/videos/burgers_gallery.mp4" type="video/mp4"></video></div>
+      <p class="caption"><b>Burgers' equation (1024 points).</b> Initial condition to the solution at t = 1. The bottom
+        panel shows the signed error against the 95% interval.</p>
+    </div>
+    <div class="tab-pane" id="pred-airfoil">
+      <div class="media-frame"><video class="media" muted loop playsinline preload="none"><source src="static/videos/airfoil_gallery.mp4" type="video/mp4"></video></div>
+      <p class="caption"><b>Transonic airfoil (221 × 51 curvilinear mesh).</b> Geometry to Mach number around the wing. The
+        uncertainty concentrates on the shocks above and below the wing, exactly where the error is.</p>
+    </div>
+    <div class="tab-pane" id="pred-adv">
+      <div class="media-frame"><video class="media" muted loop playsinline preload="none"><source src="static/videos/advection_gallery.mp4" type="video/mp4"></video></div>
+      <p class="caption"><b>Wave advection (200 points).</b> Initial profile to the advected profile at t = 0.5.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== Uncertainty ============================== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Uncertainty that follows the error</h2>
+    <p class="section-lead has-text-centered">The predictive variance combines the GP posterior over operator residuals
+      with a heteroscedastic likelihood, \(\sigma_n^2(a, x)\), read off the operator's latent features at each grid
+      point. The uncertainty therefore grows where and when the prediction is harder.</p>
+    <div class="media-frame"><video class="media" autoplay muted loop playsinline preload="metadata"><source src="static/videos/advection_gallery.mp4" type="video/mp4"></video></div>
+    <p class="caption"><b>Wave advection.</b> The 95% interval (shaded) tightens on smooth regions and widens at the moving
+      discontinuities, which is exactly where the signed error (orange, bottom) concentrates.</p>
+    <div class="table-wrap" style="margin-top: 1.6rem">
+      <table class="results-table">
+        <thead>
+          <tr class="grp"><th></th><th colspan="2">Gaussian NLL ↓</th><th colspan="2">95% coverage</th><th colspan="2">σ vs error, within a field ↑</th><th colspan="2">σ vs error, across cases ↑</th></tr>
+          <tr><th>Benchmark</th><th>fixed</th><th>adaptive</th><th>fixed</th><th>adaptive</th><th>fixed</th><th>adaptive</th><th>fixed</th><th>adaptive</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Burgers</td><td>-3.90</td><td class="ours">-4.47</td><td>0.97</td><td>0.94</td><td>0.07</td><td class="ours">0.32</td><td>0.47</td><td class="ours">0.78</td></tr>
+          <tr><td>Wave advection</td><td>-4.34</td><td class="ours">-5.54</td><td>0.96</td><td>0.95</td><td>-0.26</td><td class="ours">0.73</td><td>0.68</td><td class="ours">0.83</td></tr>
+          <tr><td>Darcy, notched domain</td><td>-4.21</td><td class="ours">-4.96</td><td>0.93</td><td>0.95</td><td>0.23</td><td class="ours">0.30</td><td>0.49</td><td class="ours">0.69</td></tr>
+          <tr><td>Navier–Stokes</td><td>-7.73</td><td class="ours">-8.18</td><td>0.94</td><td>0.94</td><td>0.04</td><td class="ours">0.23</td><td>0.48</td><td class="ours">0.81</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Test sets, mean over three seeds. σ is calibrated by a single scale on held-out validation fields.
+      Fixed: one learned noise level per grid point. Adaptive: noise read off the operator's features for each input.
+      Correlations are Spearman rank correlations between σ and the absolute error, within fields and across test cases.</p>
+  </div>
+</section>
+
+
+<!-- ============================== Application: CO2 storage ============================== -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Application: CO<sub>2</sub> geological storage</h2>
+    <p class="section-lead has-text-centered">Where will injected CO<sub>2</sub> go over 30 years? Every answer normally
+      costs a full multiphase-flow simulation. LoGoS-GPO predicts the whole saturation history of a reservoir in one
+      pass, and says how far each prediction can be trusted.</p>
+    <div class="cards" style="margin-top: 0">
+      <div class="card-k"><span class="tag-k">Heterogeneous rock</span><h4>Seven orders of magnitude</h4>
+        <p>Permeability from 0.001 mD to 10 D in layered, channelled and random facies, with anisotropy and reservoir
+          thickness from 12.5 to 200 m.</p></div>
+      <div class="card-k"><span class="tag-k">Sharp, moving front</span><h4>A near-discontinuity</h4>
+        <p>93% of the cells stay dry. The plume edge is a moving front, predicted at 24 times from 1 day to 30 years.</p></div>
+      <div class="card-k"><span class="tag-k">Coupled physics</span><h4>Eleven inputs per case</h4>
+        <p>Rock maps plus injection rate, pressure, temperature, capillarity and residual water saturation, all varying
+          from one reservoir to the next.</p></div>
+    </div>
+    <div class="media-frame" style="margin-top: 1.6rem"><img class="media" src="static/images/co2_challenge.png"
+      alt="Permeability and 30-year CO2 plume for four held-out reservoirs"></div>
+    <p class="caption"><b>Four held-out reservoirs.</b> Top: permeability. Bottom: true gas saturation after 30 years,
+      with the LoGoS-GPO plume edge dashed. Typical cases, not the best ones.</p>
+
+    <div class="stat-row">
+      <div class="stat"><div class="v">0.978</div><div class="l">plume R², the accuracy of the published U-FNO, now with uncertainty</div></div>
+      <div class="stat"><div class="v">19% better</div><div class="l">plume-risk forecasts than the deterministic U-FNO plume</div></div>
+      <div class="stat"><div class="v">One pass</div><div class="l">for all 24 snapshots, instead of a 10 CPU-minute simulation</div></div>
+    </div>
+
+    <div class="media-frame"><video class="media" autoplay muted loop playsinline preload="metadata">
+      <source src="static/videos/co2_story.mp4" type="video/mp4"></video></div>
+    <p class="caption"><b>One reservoir, 1 day to 30 years.</b> Truth, LoGoS-GPO mean, σ, and the probability that the
+      saturation exceeds 5% (a typical detection level), with the true plume edge in orange. The uncertainty rides on
+      the advancing front and along the fast layers, and the probability map hugs the true edge.</p>
+
+    <div style="max-width: 420px; margin: 1.8rem auto 0 auto"><div class="media-frame"><img class="media"
+      src="static/images/co2_reliability.png" alt="Reliability of plume probabilities"></div>
+      <p class="caption"><b>Trustworthy risk.</b> When LoGoS-GPO says a cell holds CO<sub>2</sub> with probability p, it
+        does about a fraction p of the time (held-out reservoirs; recalibrated on the other half of the test set).</p></div>
+    <p class="footnote">LoGoS-GPO works with any operator mean; here the mean is the published pre-trained U-FNO. Under the
+      same evaluation it keeps U-FNO's accuracy (test error 6.47% vs 6.48%, plume R² 0.978 for both) and adds calibrated
+      uncertainty. Risk forecasts are scored by the Brier score on held-out reservoirs (0.0028 vs 0.0035). Data and U-FNO:
+      Wen et al., <i>Advances in Water Resources</i> 163 (2022), CC BY-NC-ND 4.0.</p>
+  </div>
+</section>
+
+
+<!-- ============================== Scalability ============================== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Scalability</h2>
+    <p class="section-lead has-text-centered">Hardware-independent cost of the GP layer per training epoch, counted in
+      floating-point operations (operator excluded for both methods, shown for reference).</p>
+    <div class="stat-row">
+      <div class="stat"><div class="v">2,319×</div><div class="l">fewer GP FLOPs than exact GPO on the 151 × 151 notch grid</div></div>
+      <div class="stat"><div class="v">202×</div><div class="l">fewer GP FLOPs than exact GPO on the 8,192-point Burgers grid</div></div>
+      <div class="stat"><div class="v">\(O(d)\)</div><div class="l">growth with grid size, against \(O(d^3)\) for the exact Kronecker GP</div></div>
+    </div>
+    <div class="media-frame"><video class="media" autoplay muted loop playsinline preload="metadata"><source src="static/videos/flops_scaling.mp4" type="video/mp4"></video></div>
+    <p class="caption">Exact GPO needs eigendecompositions of the full \(d \times d\) spatial and \(N \times N\) input
+      kernels at every step. LoGoS-GPO touches \(k\) neighbours per grid point and \(M\) inducing points per input, so its
+      GP layer stays far below the cost of the neural operator it wraps.</p>
+
+    <h3 class="title is-4 has-text-centered" style="margin-top: 2.6rem">A million outputs per field</h3>
+    <p class="section-lead has-text-centered" style="font-size: 0.98rem">Navier–Stokes at 1024 × 1024 (Kossaifi et al.
+      release: rough forcing, 900 training fields). The GP predicts every one of the 1,048,576 grid values of each field,
+      with the operator running at 128 × 128 and its features lifted to the full grid exactly in Fourier space.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="v">1,048,576</div><div class="l">outputs per field, each with its own uncertainty</div></div>
+      <div class="stat"><div class="v">0.96</div><div class="l">rank correlation between a field's predicted σ and its actual error</div></div>
+      <div class="stat"><div class="v">0.94</div><div class="l">95% coverage after one calibration factor; test error 7.5%</div></div>
+    </div>
+    <div class="media-frame"><img class="media" src="static/images/ns1024_field.png"
+      alt="A 1024 x 1024 Navier-Stokes test field: forcing, truth, LoGoS-GPO mean and error, with a zoomed patch"></div>
+    <p class="caption"><b>One test field, all 1,048,576 points.</b> A typical case (median error). Below: the 128 × 128
+      patch where the error is largest; even there the mean follows the truth and the error sits in thin bands.</p>
+    <div style="max-width: 400px; margin: 1.6rem auto 0 auto"><div class="media-frame"><img class="media"
+      src="static/images/ns1024_cases.png" alt="Predicted sigma against actual error for 200 test fields"></div>
+      <p class="caption"><b>It knows which fields are hard.</b> Each dot is a test field: its predicted σ against its actual
+        error. The ranking is almost perfect (ρ = 0.96); the hardest fields get the largest σ.</p></div>
+    <p class="footnote">Predictions are averaged over the eight rotations and reflections of the torus (reflections flip
+      the sign of vorticity), an exact symmetry of this forcing-to-vorticity map.</p>
+  </div>
+</section>
+
+<!-- ============================== BibTeX ============================== -->
+<section class="section hero is-light" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <div class="bibtex-header">
+      <h2 class="title">BibTeX</h2>
+      <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
+        <i class="fas fa-copy"></i> <span class="copy-text">Copy</span></button>
+    </div>
+    <pre id="bibtex-code"><code>@article{kumar2026logosgpo,
+  title   = {From Local Interactions to Global Operators: Scalable Gaussian Process Operator for Physical Systems},
+  author  = {Kumar, Sawan and Tripura, Tapas and Nayek, Rajdip and Chakraborty, Souvik},
+  journal = {Journal of Computational Physics},
+  year    = {2026},
+  eprint  = {2506.15906},
+  archivePrefix = {arXiv}
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered is-size-7">
+      <p>This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic
+        Project Page Template</a>, which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+        It is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons
+        Attribution-ShareAlike 4.0 International License</a>.</p>
+    </div>
+  </div>
+</footer>
+</main>
+
+<script>
+  // tabs: one active pane per group; only the visible video plays
+  document.querySelectorAll(".tabs-k").forEach(function (bar) {
+    bar.querySelectorAll("button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        bar.querySelectorAll("button").forEach(function (b) {
+          b.classList.remove("active");
+          var p = document.getElementById(b.dataset.pane);
+          p.classList.remove("active");
+          p.querySelectorAll("video").forEach(function (v) { v.pause(); });
+        });
+        btn.classList.add("active");
+        var pane = document.getElementById(btn.dataset.pane);
+        pane.classList.add("active");
+        pane.querySelectorAll("video").forEach(function (v) { v.play(); });
+      });
+    });
+  });
+  function copyBibTeX() {
+    var code = document.getElementById("bibtex-code").textContent;
+    var btn = document.querySelector(".copy-bibtex-btn .copy-text");
+    navigator.clipboard.writeText(code).then(function () {
+      btn.textContent = "Copied";
+      setTimeout(function () { btn.textContent = "Copy"; }, 1800);
+    });
+  }
+</script>
+</body>
+</html>

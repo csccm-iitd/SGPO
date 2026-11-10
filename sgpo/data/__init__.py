@@ -1,3 +1,2 @@
-from sgpo.data.loaders import load_data
-from sgpo.data.normalizers import UnitGaussianNormalizer, GaussianNormalizer, RangeNormalizer
+from sgpo.data.benchmarks import REGISTRY, domain_mask, load_split
 from sgpo.data.readers import MatReader

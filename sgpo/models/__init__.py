@@ -1,3 +1,2 @@
-from sgpo.models.vnngp import VNNGP
-from sgpo.models.svgp import SVGP
-from sgpo.models.exact_gp import ExactGPModel
+from sgpo.models.logos_vnngp import LoGoSVNNGP, SVGP, VecchiaKx
+from sgpo.models.gpo import GPO
