@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://csccm-iitd.github.io/SGPO/"><img src="https://img.shields.io/badge/Project-Page-3b5bdb?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Project page"></a>
+  <a href="https://savnkr.github.io/LoGoS-GPO/"><img src="https://img.shields.io/badge/Project-Page-3b5bdb?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Project page"></a>
   <a href="https://www.sciencedirect.com/science/article/pii/S002199912600135X"><img src="https://img.shields.io/badge/Paper-J.%20Comput.%20Phys.-1f2430?style=for-the-badge&logo=elsevier&logoColor=white" alt="Paper"></a>
   <a href="https://arxiv.org/abs/2506.15906"><img src="https://img.shields.io/badge/arXiv-2506.15906-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white" alt="arXiv"></a>
   <a href="#datasets-and-notebooks"><img src="https://img.shields.io/badge/Notebooks-Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Notebooks"></a>
@@ -31,7 +31,7 @@ neighbours (above: a field built one point at a time, each point conditioned on 
 the accuracy of the operator, adds calibrated uncertainty at every output point, and scales linearly with the grid.
 
 > **Updated release.** Refined implementation with stronger results on every benchmark, input-adaptive uncertainty,
-> new benchmarks and applications, and a [project page](https://csccm-iitd.github.io/SGPO/).
+> new benchmarks and applications, and a [project page](https://savnkr.github.io/LoGoS-GPO/).
 
 ## Highlights
 
@@ -70,7 +70,7 @@ CO<sub>2</sub>.</sub></p>
 region.</sub></p>
 
 Tables, uncertainty scores, the scaling study and more galleries are on the
-[project page](https://csccm-iitd.github.io/SGPO/).
+[project page](https://savnkr.github.io/LoGoS-GPO/).
 
 ## Installation
 
